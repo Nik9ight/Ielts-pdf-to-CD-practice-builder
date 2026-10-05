@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reading Room · IELTS practice</title>
+  <meta name="description" content="Local PDF reading practice with a split reading view and a pausable timer.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231e4fc2'/%3E%3Cpath d='M8 8h6v16H8zm10 0h6v16h-6z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.mjs"></script>
+</head>
+<body>
+  <header class="app-header"><a class="brand" href="/" aria-label="Reading Room home"><span class="brand-mark" aria-hidden="true">Ⅱ</span>Reading Room<span class="brand-divider"></span><span class="brand-sub">IELTS reading practice</span></a><span class="local-badge">On your computer</span></header>
+  <main id="setup" class="setup">
+    <div class="intro"><span class="eyebrow">YOUR PRACTICE SPACE</span><h1>Turn a PDF into reading practice.</h1><p>Your passage on the left. Your questions on the right. Your own pace.</p></div>
+    <section class="upload-card" aria-labelledby="upload-heading">
+      <div class="upload-icon" aria-hidden="true">▤</div><h2 id="upload-heading">Choose a practice PDF</h2><p>Multiple choice, summary completion, true / false / not given, and more.</p>
+      <label class="button primary file-button">Select PDF<input id="file-input" type="file" accept=".pdf,application/pdf"></label>
+      <p class="small muted">Or drop a PDF here · Files stay on this computer</p>
+    </section>
+    <p id="load-status" role="status" class="status"></p>
+    <div id="import-panel" hidden>
+      <div class="section-heading"><div><span class="eyebrow">PREPARE YOUR SESSION</span><h2 id="document-name"></h2></div><span id="page-count" class="pill"></span></div>
+      <p id="import-note" class="notice"></p>
+      <div id="exercise-picker" class="exercise-picker"></div>
+      <div class="config-row"><label>Practice time<div class="input-unit"><input id="minutes" type="number" min="1" max="180" value="20"><span>minutes</span></div></label><label>Answer format<select id="answer-format"><option value="auto">Detect from questions</option><option value="choice">Multiple choice (A–D)</option><option value="tfng">True / False / Not given</option><option value="ynng">Yes / No / Not given</option><option value="text">Written answers</option></select></label><label>First question<input id="first-question" type="number" min="1" max="200" value="1"></label><label>Number of questions<input id="question-count" type="number" min="1" max="100" value="5"></label></div>
+      <details id="adjust-details"><summary>Check or adjust the passage and questions</summary><p class="small muted">PDF layouts vary. Check the split here before you begin. Remove any answer explanations from these two boxes.</p><div class="editor-grid"><label>Reading passage<textarea id="passage-edit" rows="12"></textarea></label><label>Questions and instructions<textarea id="questions-edit" rows="12"></textarea></label></div><p id="key-status" class="small"></p><details><summary>Set answer-key pages manually (optional)</summary><p class="small muted">If the key was not detected, enter its PDF page numbers, such as 8–9. These pages will be removed from the practice text.</p><div class="inline-controls"><input id="key-pages" aria-label="Answer-key page numbers" placeholder="e.g. 8–9"><button id="apply-key" class="button secondary">Use these pages as the key</button></div></details></details>
+      <div class="start-row"><p class="small muted">The timer begins when you start. Answers stay hidden until submission.</p><button id="start" class="button primary">Start practice</button></div>
+    </div>
+    <footer class="setup-footer">A personal practice tool. Not an official IELTS test interface.</footer>
+  </main>
+  <main id="practice" hidden>
+    <div class="session-bar"><div class="session-title"><span class="eyebrow" id="session-kind">READING PRACTICE</span><h1 id="session-name"></h1></div><div class="timer-controls"><div class="timer-block"><span id="timer-label">TIME REMAINING</span><strong id="timer" role="timer">20:00</strong></div><button id="pause" class="button secondary">Pause</button><button id="submit" class="button primary">Submit practice</button></div></div>
+    <div id="review-banner" class="review-banner" hidden><div><strong>Practice submitted</strong><span>Compare your responses with the answer key below. No automatic scoring.</span></div><button id="new-practice" class="button secondary">New practice</button></div>
+    <div class="workspace" id="workspace"><section class="reading-pane" aria-labelledby="passage-heading"><div class="pane-header"><h2 id="passage-heading">Reading passage</h2><label class="text-size">Text size<select id="text-size" aria-label="Passage text size"><option value="17">Standard</option><option value="20">Large</option><option value="23">Extra large</option></select></label></div><article id="passage" class="passage"></article></section><section class="questions-pane" aria-labelledby="questions-heading"><div class="pane-header"><h2 id="questions-heading">Questions</h2><span id="answered-label" class="muted small"></span></div><div id="questions" class="questions"></div><section id="answer-key" class="answer-key" hidden><span class="eyebrow">SELF REVIEW</span><h2>Answer key & explanations</h2><div id="key-content"></div></section></section></div>
+    <nav class="question-nav" aria-label="Question navigation"><span class="small">Questions</span><div id="question-buttons"></div><span class="small muted" id="nav-hint">Select a number to jump to your answer</span></nav>
+  </main>
+  <dialog id="pause-dialog"><div class="dialog-icon">Ⅱ</div><h2>Take a breather.</h2><p>Your timer is paused. Your answers are right where you left them.</p><button id="resume" class="button primary">Resume practice</button></dialog>
+  <dialog id="submit-dialog"><h2>Submit your practice?</h2><p id="submit-message"></p><p class="small muted">Your responses will be locked and the answer key will be revealed.</p><div class="dialog-actions"><button id="keep-working" class="button secondary">Keep working</button><button id="confirm-submit" class="button primary">Submit & reveal answers</button></div></dialog>
+  <dialog id="expired-dialog"><h2>Time is up.</h2><p>You can submit to reveal the answers, or keep practising without the timer.</p><div class="dialog-actions"><button id="continue-untimed" class="button secondary">Continue untimed</button><button id="submit-expired" class="button primary">Submit practice</button></div></dialog>
+</body>
+</html>
